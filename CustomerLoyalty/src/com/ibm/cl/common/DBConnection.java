@@ -1,0 +1,169 @@
+package com.ibm.cl.common;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
+import org.apache.log4j.Logger;
+
+import com.ibm.core.exception.DAOException;
+
+
+
+public class DBConnection {
+	
+
+	
+	private static Logger logger = Logger.getLogger(DBConnection.class);
+	private static DataSource mem_o_datasource;
+	private static DataSource hrms_datasource;
+	private static int counter=0;
+	
+	/**
+	 * The default private constructor. 
+	 */
+	public DBConnection() {
+	}
+	/**
+	 * This method does the lookup of the application datasource and store it in a memeber variable to be 
+	 * used later, to avoid doing lookups again and again
+	 * @exception DAOException - This exception is thrown in case data source cannot be looked up
+	 */
+	private  static void getDataSource() throws DAOException {
+		try {
+			synchronized (DBConnection.class){
+				if (mem_o_datasource == null) {	
+					InitialContext loc_o_ic = new InitialContext();
+					mem_o_datasource =
+						(DataSource) loc_o_ic.lookup(
+							PropertyReader.getValue("DATASOURCE_LOOKUP_NAME"));	
+				}
+			}
+		} catch (NamingException namingException) {
+			logger.error("Lookup of Data Source Failed. Reason:" + namingException.getMessage());
+			throw new DAOException("Exception Occured while data source lookup.",namingException);
+		}
+	}
+	
+	/**
+	 * This method does the lookup of the HRMS datasource and store it in a memeber variable to be 
+	 * used later, to avoid doing lookups again and again.
+	 * @exception DAOException - This exception is thrown in case data source cannot be looked up
+	 */
+	private  static void getHRMSDataSource() throws DAOException {
+		try {
+			synchronized (DBConnection.class){
+				if (hrms_datasource == null) {
+					InitialContext loc_o_ic = new InitialContext();
+					hrms_datasource =(DataSource) loc_o_ic.lookup(PropertyReader.getValue("OLMSDS_LOOKUP_NAME"));					
+				}
+			}
+		} catch (NamingException namingException) {
+			logger.error("Lookup of LDAP Data Source Failed. Reason:" + namingException.getMessage());
+			throw new DAOException("Exception Occured while data source lookup.",namingException);
+		}
+	}
+	
+	/**
+	 * This method returns the application DB connection using datasource.
+	 * @return Connection - The DB connection instance
+	 * @exception DAOException - This exception is thrown in case connection is not established
+	 */
+	public static  Connection getDBConnection() throws DAOException {
+		Connection dbConnection = null;
+		String ServerName = "dashdb-entry-yp-dal09-10.services.dal.bluemix.net";
+		int PortNumber = 50001;
+		String DatabaseName = "BLUDB";
+		String user = "dash6030";
+		String userPassword = "5MG2trHffJkM";
+
+		java.util.Properties properties = new java.util.Properties();
+
+		properties.put("user", user);
+		  //properties.put("user", "lmsuser");
+		properties.put("password",userPassword);
+		  //properties.put("password", "asd@23#gT6");
+	properties.put("sslConnection", "true");
+
+		String url = "jdbc:db2://dashdb-entry-yp-dal09-10.services.dal.bluemix.net:50000/BLUDB";
+		//String url="jdbc:db2://10.96.73.95:60000/LMSDB_N";
+
+		try
+		{
+			Class.forName("com.ibm.db2.jcc.DB2Driver").newInstance();
+		}
+		catch ( Exception e )
+		{
+			System.out.println("Error: failed to load Db2 jcc driver."); 
+		}
+
+		try
+		{
+			System.out.println("url: " + url);
+			dbConnection = java.sql.DriverManager.getConnection(url, properties);
+		
+		}catch(SQLException sqlEx){
+			sqlEx.printStackTrace();
+			System.out.println(sqlEx.getErrorCode());
+			System.out.println(sqlEx.getSQLState());
+			throw new DAOException(sqlEx.getMessage());
+		}
+		
+		return dbConnection;
+	}
+	
+	
+	/**
+	 * This method returns the HRMS DB connection using datasource.
+	 * @return Connection - The HRMS database connection instance.
+	 * @exception DAOException - This exception is thrown in case connection is not established.
+	 */
+	public static  Connection getOLMSConnection() throws DAOException {
+		Connection oracleConnection = null;
+		try {
+			
+			if (hrms_datasource == null) {
+				getHRMSDataSource();
+				}
+			oracleConnection =
+				hrms_datasource.getConnection();
+			logger.info("Connection Obtained.");
+		} catch (SQLException sqlException) {
+			logger.error("Couldn't connected to HRMS server. Reason:" + sqlException.getMessage() + ". Error Code:" + sqlException.getErrorCode());
+			throw new DAOException("Couldn't connected to HRMS server.");
+		}
+		return oracleConnection;
+	}
+	
+	public static void releaseResources(
+		Connection connection,
+		Statement statement,
+		ResultSet resultSet)
+		throws DAOException {
+		try {
+						counter--;
+			if (resultSet != null) {
+				resultSet.close();
+				resultSet = null;
+			}
+			if (statement != null) {
+				statement.close();
+				statement = null;
+			}
+			if (connection != null) {
+				connection.close();
+				connection = null;
+			}
+		} catch (SQLException sqlException) {
+			logger.error("Closing of Resources Failed. Reason:" + sqlException.getMessage()+". Error Code:"+ sqlException.getErrorCode());
+			throw new DAOException("errors.dbconnection.close_connection");
+		}
+	}
+
+
+}

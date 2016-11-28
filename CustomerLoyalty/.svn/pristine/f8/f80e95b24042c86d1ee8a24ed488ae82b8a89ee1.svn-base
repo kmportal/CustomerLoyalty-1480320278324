@@ -1,0 +1,105 @@
+package com.ibm.cl.dao.impl;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Random;
+
+import com.ibm.cl.common.DBConnection;
+import com.ibm.cl.dao.UserRegistrationDao;
+import com.ibm.cl.dto.UserRegistrationDto;
+import com.ibm.cl.forms.UserRegistrationFormBean;
+import com.ibm.core.exception.DAOException;
+import com.ibm.ejs.cm.proxy.DB2ConnectionProxy;
+
+public class UserRegistrationDaoImpl implements UserRegistrationDao {
+	
+private static UserRegistrationDaoImpl userRegistrationDaoImpl=null;
+	
+	private UserRegistrationDaoImpl(){
+		
+	}
+	
+	public static UserRegistrationDaoImpl userRegistrationDaoInstance()
+	{
+		if(userRegistrationDaoImpl==null)
+		{
+			userRegistrationDaoImpl=new UserRegistrationDaoImpl();
+		}
+		return userRegistrationDaoImpl;
+		
+	}
+
+	public ArrayList<UserRegistrationDto> createUser(UserRegistrationFormBean userBean) throws DAOException {
+		
+		Connection con =null;
+		PreparedStatement ps = null;
+		PreparedStatement ps1 = null;
+		ResultSet rs = null;
+		//UserRegistrationDto dto = null;
+		ArrayList<UserRegistrationDto> returnUserRegistrationDto = new ArrayList<UserRegistrationDto>();
+		try{
+			UserRegistrationDto userdto = new UserRegistrationDto();
+			con = DBConnection.getDBConnection();
+			ps1=con.prepareStatement("SELECT * FROM LMSUSER.CL_USR_MASTER WHERE MOBILE_NUMBER=?");
+			ps=con.prepareStatement("INSERT INTO LMSUSER.CL_USR_MASTER(FIRST_NAME, LAST_NAME, MOBILE_NUMBER, EMAIL_ID, ADDRESS, CARD_NUMBER, USER_STATE, CREATED_BY, CREATED_DATE, PINCODE)" 
+    +"VALUES( ?, ?, ?,?, ?,?,?,?, current_timestamp, ?)");
+			
+			ps1.setLong(1, userBean.getMobileNumber());
+			rs=ps1.executeQuery();
+			if(rs.next()){
+				
+				userdto.setCardNumber(rs.getString("CARD_NUMBER"));
+				userdto.setMessage("Your mobile number is already registered");
+			}
+			
+			else{
+				
+				
+				 Random rand = new Random();
+					String cardNumber ;
+					String randNo="";
+					
+					int randNumber=rand.nextInt(99999999);
+					if(randNumber < 10000000)
+					{
+						Integer newRand=rand.nextInt(9);
+						randNo=randNo+newRand;
+						randNo=randNo+randNumber;		
+					}
+					else
+						randNo=randNo+randNumber;
+					String number  = ((Long)userBean.getMobileNumber()).toString();
+					cardNumber = number+randNo;
+					
+					System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"+cardNumber);
+				
+				
+			ps.setString(1,userBean.getFirstName());
+			ps.setString(2,userBean.getLastName());
+			ps.setLong(3,userBean.getMobileNumber());
+			ps.setString(4, userBean.getEmail());
+			ps.setString(5, userBean.getAddress());
+			ps.setString(6, cardNumber);
+			ps.setString(7,userBean.getState());
+			ps.setString(8,"cl_user");
+			ps.setInt(9,1234567	);
+			ps.executeUpdate();
+			userdto.setCardNumber(cardNumber);
+			userdto.setMessage("Registration is successful");
+			}
+			returnUserRegistrationDto.add(userdto);
+			return returnUserRegistrationDto;
+			
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			UserRegistrationDto userDTO = new UserRegistrationDto();
+			userDTO.setMessage("User creation failed");
+			returnUserRegistrationDto.add(userDTO);
+		}
+		return returnUserRegistrationDto;
+	}
+
+}

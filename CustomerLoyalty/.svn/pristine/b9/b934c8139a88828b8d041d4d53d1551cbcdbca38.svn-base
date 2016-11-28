@@ -1,0 +1,12 @@
+package com.ibm.cl.service;
+
+import java.util.ArrayList;
+
+import com.ibm.cl.dto.UserRegistrationDto;
+import com.ibm.cl.forms.UserRegistrationFormBean;
+
+public interface UserRegistrationService {
+	
+	public ArrayList<UserRegistrationDto> createUser(UserRegistrationFormBean userBean);
+
+}

@@ -1,0 +1,54 @@
+package com.ibm.cl.service.impl;
+
+import java.util.ArrayList;
+import java.util.Random;
+
+import com.ibm.cl.dao.SearchUserDao;
+import com.ibm.cl.dao.UserRegistrationDao;
+import com.ibm.cl.dao.impl.SearchUserDaoImpl;
+import com.ibm.cl.dao.impl.UserRegistrationDaoImpl;
+import com.ibm.cl.dto.ProductDto;
+import com.ibm.cl.dto.UserRegistrationDto;
+import com.ibm.cl.forms.UserRegistrationFormBean;
+import com.ibm.cl.service.UserRegistrationService;
+
+public class UserRegistrationServiceImpl implements UserRegistrationService {
+
+	public ArrayList<UserRegistrationDto> createUser(UserRegistrationFormBean userBean) {
+		
+		
+		UserRegistrationDao userRegistrationDao = UserRegistrationDaoImpl.userRegistrationDaoInstance();
+		
+		ArrayList<UserRegistrationDto> returnUserRegistrationDto = new ArrayList<UserRegistrationDto>();
+		returnUserRegistrationDto= userRegistrationDao.createUser(userBean);
+		
+		
+		
+		
+		
+		return returnUserRegistrationDto;
+	}
+
+	@Override
+	public ArrayList<ProductDto> fetchProducts() {
+		
+		ArrayList productList=null;
+		SearchUserDao searchDao=SearchUserDaoImpl.searchUserDaoIntance();
+		return searchDao.fetchProducts();
+	}
+	
+	@Override
+	public String addProduct(int prodId,String mobNo){
+		
+		UserRegistrationDao userDao=UserRegistrationDaoImpl.userRegistrationDaoInstance();
+		return userDao.addProduct(prodId, mobNo);
+		
+	}
+
+	@Override
+	public String userLoginAuthenticate(String user, String pass) {
+		// TODO Auto-generated method stub
+		UserRegistrationDao userDao=UserRegistrationDaoImpl.userRegistrationDaoInstance();
+		return userDao.userLoginAuthenticate(user, pass);
+	}
+}

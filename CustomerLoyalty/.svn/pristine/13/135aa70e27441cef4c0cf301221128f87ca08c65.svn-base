@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
+<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
+
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+
+
+
+
+<html>
+<head>
+<script>
+function validate(){
+var mobileNumber = document.getElementById("mobileNumber1").value;
+var productId=document.getElementById("productId").value;
+
+if(mobileNumber=='' ){
+alert(" Mobile Number cannot be blank");
+return false;
+}
+if(mobileNumber!=''){
+var regex = /^[0-9]/;
+if(!regex.test(mobileNumber)){
+alert("Mobile Number can be numeric only");
+return false;
+}
+if(mobileNumber.length!=10){
+alert("Mobile Number should be a 10 digit number");
+return false;
+}
+
+}
+if(productId=''){
+	alert("please select the PRODUCT");
+	return false;
+}
+
+
+document.forms[0].methodName.value="referedUserCreation";
+
+document.forms[0].submit();
+
+return true;
+}
+
+function clearform(){
+	document.getElementById("Name").value="";
+	document.getElementById("productId").value="";
+	document.getElementById("address1").value="";
+	document.getElementById("circle").value="";
+	document.getElementById("mobileNumber1").value="";
+	document.getElementById("alternatemobileNumber1").value="";
+	
+	
+	
+	
+}
+
+
+</script>
+<style type="text/css">
+tr,td{
+padding-top: 15px;
+font-family: sans-serif;
+
+}
+
+input[type=text] {
+	border-radius: 4px;
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 3px solid #ccc;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline: none;
+}
+
+input[type=text]:focus {
+    border: 3px solid #555;
+}
+
+
+input[type=submit] {
+	
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #f44336;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 18px;
+  padding: 8px;
+  width: 150px;
+  transition: all 0.5s;
+  cursor: pointer;
+  
+  
+}
+
+input[type=submit]:HOVER {
+	text-transform:uppercase;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: red;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 18px;
+  padding: 8px;
+  width: 150px;
+  transition: all 0.5s;
+  cursor: pointer;
+  -webkit-box-shadow: 0px 0px 5px rgba(0,0,0, .75);
+  -moz-box-shadow: 0px 0px 5px rgba(0,0,0, .75);
+   box-shadow: 0px 0px 5px rgba(0,0,0, .75);
+  
+}
+
+
+</style>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body bgcolor="#F0FFF0" onload="clearform();">	
+<html:form action="/referUser.do?methodName=referedUserCreation"  >
+	<html:hidden property="methodName" value="" />
+
+<%
+				if (null != request.getAttribute("leadCreateStatus")) {
+						String insertStatus = request.getAttribute("leadCreateStatus")
+								.toString();
+						if (!"null".equals(insertStatus)) {
+							out.print("<center><h4><FONT color=\"green\">"
+									+ insertStatus + "</FONT></h4></center>");
+						}
+					}
+			%>
+
+
+<table>
+
+<tr>
+ <td><label for="field1" ><strong> customerName: </strong></label></td>
+<td><html:text styleId="Name" maxlength="10" name="ReferralFormBean" property="customerName" /></td>
+</tr>
+
+<tr>
+ <td><label for="field1" ><strong> Product: </strong></label></td>
+<td><html:select property="productId" name="ReferralFormBean" styleClass="select1" styleId="productId">
+					<html:option value="">Select Lob</html:option>
+					<logic:notEmpty name="listOfProducts" scope="request">
+						<bean:define id="lobs" 	name="listOfProducts" scope="request"/> 
+						<html:options labelProperty="productName" property="productId" collection="lobs" />
+					</logic:notEmpty>
+					
+				</html:select> </td>
+</tr>
+
+<tr>
+ <td><label for="field1" ><strong> Mobile Number: </strong></label></td>
+<td><html:text styleId="mobileNumber1" maxlength="10" name="ReferralFormBean" property="mobileNumber"/></td>
+</tr>
+
+<tr>
+ <td><label for="field1" ><strong> Address: </strong></label></td>
+<td><html:text styleId="address1" maxlength="10" name="ReferralFormBean" property="address"/></td>
+</tr>
+
+<tr>
+ <td><label for="field1" ><strong> Circle: </strong></label></td>
+<td><html:text styleId="circle" maxlength="10" name="ReferralFormBean" property="circle"/></td>
+</tr>
+
+<tr>
+ <td><label for="field1" ><strong> Alternate Mobile Number: </strong></label></td>
+<td><html:text styleId="alternatemobileNumber1" maxlength="10" name="ReferralFormBean" property="alternatemobileNumber"/></td>
+</tr>
+
+
+
+
+
+
+<tr>
+<td>
+
+<html:submit style="vertical-align:middle" onclick="return validate()">SUBMIT</html:submit>
+
+<!-- <input type="button" onclick="validate()" style="vertical-align:middle" value="SUBMIT"> -->
+	
+</td>
+
+</tr>
+</table>
+
+
+</html:form>
+</body>
+</html>

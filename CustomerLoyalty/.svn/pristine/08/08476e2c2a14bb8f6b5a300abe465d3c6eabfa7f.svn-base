@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN"
+                                   "http://struts.apache.org/dtds/tiles-config_1_1.dtd">
+<tiles-definitions>
+	<definition name=".mainLayout" path="/jsp/layout/mainLayout.jsp">
+		<put name="menu" value=""></put>
+		<put name="title" value=""></put>
+		<put name="body" value=""></put>
+		<put name="header" value=""></put>
+		<put name="footer" value=""></put>
+		
+	</definition>
+	
+	<definition name="Menu.page" extends=".mainLayout">
+		<put name="title" value="Menu"/>
+		<put name="body" value="/jsp/Menu.jsp"/>
+		
+	</definition>
+	
+	<definition name="SearchUser.page" extends=".mainLayout">
+		<put name="title" value="SearchUser"/>
+			<put name="menu" value="/jsp/Menu.jsp"></put>
+		<put name="body" value="/jsp/SearchUser.jsp"/>
+		
+	</definition>
+	
+	<definition name="UserRegistration.page" extends=".mainLayout">
+	
+		<put name="title" value="UserRegistration"/>
+		<put name="menu" value="/jsp/Menu.jsp"></put>
+		<put name="body" value="/jsp/UserRegistration.jsp"></put>
+		
+	</definition>
+		<definition name="CardNumber.page" extends=".mainLayout">
+		<put name="title" value="Successful"/>
+			<put name="menu" value="/jsp/Menu.jsp"></put>
+		<put name="body" value="/jsp/CardNumber.jsp"></put>
+		
+	</definition>
+	
+			<definition name="UserDetails.page" extends=".mainLayout">
+		<put name="title" value="User Details"/>
+			<put name="menu" value="/jsp/Menu.jsp"></put>
+		<put name="body" value="/jsp/UserDetails.jsp"></put>
+		
+	</definition>
+
+	<definition name="UserPage.page" extends=".mainLayout">
+	 	<put name="title" value="Add Product"/>
+	  	<put name="menu" value="/jsp/layout/userMenu.jsp"></put>
+	  	<put name="body" value="/jsp/addProduct.jsp"></put>
+	  	
+	</definition>
+
+	
+	<definition name="CampaignDetails.page" extends=".mainLayout">
+		<put name="title" value="Campaign Details"/>
+			<put name="menu" value="/jsp/layout/userMenu.jsp"></put>
+		<put name="body" value="/jsp/CampaignDetails.jsp"></put>
+		
+	</definition>
+
+	
+	<definition name="BusinessCriteria.page" extends=".mainLayout">
+		<put name="title" value="Business Criteria"/>
+		<put name="body" value="/jsp/BusinessCriteria.jsp"/>
+
+	</definition> 
+	
+	<definition name="referUser.page" extends=".mainLayout">
+		<put name="title" value="referUser"/>
+			<put name="menu" value="/jsp/layout/userMenu.jsp"></put>
+		<put name="body" value="/jsp/referralPage.jsp"/>
+		
+	</definition>
+
+
+</tiles-definitions>

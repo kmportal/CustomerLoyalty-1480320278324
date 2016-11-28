@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN"
+                               "http://jakarta.apache.org/struts/dtds/struts-config_1_2.dtd">
+<struts-config>
+<form-beans>
+<form-bean name="UserRegistrationFormBean" type="com.ibm.cl.forms.UserRegistrationFormBean"></form-bean>
+<form-bean name="SearchUserFormBean" type="com.ibm.cl.forms.SearchUserFormBean"></form-bean> 
+<form-bean name="displayCampaignFormBean" type="com.ibm.cl.forms.CampaignPageForm"/>
+</form-beans>
+<action-mappings>
+<action name="UserRegistrationFormBean" path="/userRegistration" scope="request" validate="false" type="com.ibm.cl.actions.UserRegistrationAction" parameter = "methodName">
+<forward name="userRegistration" path="UserRegistration.page"></forward>
+<forward name="registrationSuccessful" path="CardNumber.page"></forward>
+<forward name="userMenu" path="Menu.page"></forward>
+</action>
+<action name="UserRegistrationFormBean" path="/userSearch" scope="request" validate="false" type="com.ibm.cl.actions.SearchUserAction" parameter = "methodName">
+<forward name="userSearch" path="SearchUser.page"></forward>
+<forward name="userDetails" path="UserDetails.page"></forward>
+<!--<forward name="registrationSuccessful" path="CardNumber.page"></forward>
+--></action>
+
+<action name="displayCampaignFormBean" path="/displayCampaignPage" type="com.ibm.cl.actions.CampaignPageAction" parameter = "methodName" scope="request" validate="false"> 
+<forward name = "campaignDetailsPage" path="CampaignDetails.page"/>
+</action>
+</action-mappings>
+<message-resources parameter="ApplicationResources"/>
+<plug-in className="org.apache.struts.tiles.TilesPlugin">
+		<set-property property="definitions-config" value="/WEB-INF/tiles-defs.xml" />
+		<set-property property="moduleAware" value="true" />
+	</plug-in>
+</struts-config>
