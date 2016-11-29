@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project basedir="." default="build" name="CustomerLoyalty-1480320278324">
+<project basedir="." default="build" name="CustomerLoyalty">
     
   <property name="debuglevel" value="source,lines,vars" />
   <property name="target" value="1.5" />
   <property name="source" value="1.5" />
-  <property name="warname" value="customerloyalty.war" />
-  <property environment="env"/>
+  <property name="warname" value="customerloyalty.war"
   <condition property="artifact_dir" value="${env.ARCHIVE_DIR}" else=".">
     <isset property="env.ARCHIVE_DIR" />
   </condition>
